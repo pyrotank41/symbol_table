@@ -120,6 +120,7 @@ class symtable
       {
         throw runtime_error("no scope is open");
       }
+      numscopes = numscopes - scopeDeque.front().Symbols.size();
       scopeDeque.pop_front();
     }
 
