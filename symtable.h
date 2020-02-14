@@ -72,7 +72,10 @@ class symtable
 
     // default constructor: --------------------------------------------
     // Creates a new, empty symbol table.  No scope is open.
-    symtable(){}
+    symtable()
+    {
+     // numSymbols = 0;
+    }
 
     // size: --------------------------------------------------------------
     // Returns total # of symbols in the symbol table.
@@ -101,7 +104,8 @@ class symtable
     // Complexity: O(1)
     void enterScope(string name)
     {
-      scopeDeque.push_back(Scope(name));
+      Scope s(name);
+      scopeDeque.push_back(s);
     }
 
     //
@@ -120,8 +124,8 @@ class symtable
       {
         throw runtime_error("no scope is open");
       }
-      numscopes = numscopes - scopeDeque.front().Symbols.size();
-      scopeDeque.pop_front();
+      numSymbols -= scopeDeque.front().Symbols.size();
+      scopeDeque.pop_back();
     }
 
     // curScope: -----------------------------------------------------------
@@ -134,8 +138,7 @@ class symtable
       {
         throw runtime_error("no scope is open");
       }
-
-      return scopeDeque.front();
+      return scopeDeque.back();
     }
 
 
@@ -146,8 +149,19 @@ class symtable
     // Complexity: O(lgN) where N is the # of symbols in current scope
     void insert(KeyT key, SymbolT symbol)
     {
-      numSymbols += 1;
-      scopeDeque.front().Symbols.insert( pair<KeyT,SymbolT>(key, symbol));
+      auto itr = scopeDeque.back().Symbols.find(key);
+      if( itr !=  scopeDeque.back().Symbols.end())
+      {
+        itr->second = symbol;
+      }
+
+      else
+      {
+        
+        numSymbols += 1;
+    // cout << numSymbols << endl;
+        scopeDeque.back().Symbols.emplace( key, symbol);
+      }
     }
 
 
@@ -181,16 +195,13 @@ class symtable
                 ScopeOption option = ScopeOption::ALL) const
     {
       //complete stack
-      if(option == ScopeOption::ALL)
+      if(option == ScopeOption::CURRENT)
       {
-        for(Scope s: scopeDeque)
-        { 
-          auto itr = s.Symbols.find(key);
-          if( itr != s.Symbols.end())
-          {
-            symbol = itr->second;
-            return true;
-          }
+        auto itr = scopeDeque.back().Symbols.find(key);
+        if( itr != scopeDeque.back().Symbols.end())
+        {
+          symbol = itr->second;
+          return true;
         }
       }
       
@@ -198,8 +209,8 @@ class symtable
       //global scope
       else if(option == ScopeOption::GLOBAL)
       {
-        auto itr = scopeDeque.back().Symbols.find(key);
-        if( itr != scopeDeque.back().Symbols.end())
+        auto itr = scopeDeque.front().Symbols.find(key);
+        if( itr != scopeDeque.front().Symbols.end())
         {
           symbol = itr->second;
           return true;
@@ -209,11 +220,15 @@ class symtable
       //current Scope
       else 
       {
-        auto itr = scopeDeque.front().Symbols.find(key);
-        if( itr != scopeDeque.front().Symbols.end())
-        {
-          symbol = itr->second;
-          return true;
+        
+        for(int i = scopeDeque.size()-1; i >= 0 ; --i)
+        { 
+          auto itr = scopeDeque[i].Symbols.find(key);
+          if( itr != scopeDeque[i].Symbols.end())
+          {
+            symbol = itr->second;
+            return true;
+          }
         }
       }
 
@@ -254,6 +269,16 @@ class symtable
       //
       // output format per scope:
       //
+      for (int i = scopeDeque.size()-1; i >= 0; i--)
+      {
+        cout << "** " << scopeDeque[i].Name << " **" << endl;
+        for (auto itr = scopeDeque[i].Symbols.end()-1; itr >= scopeDeque[i].Symbols.begin(); itr--)
+        {
+          cout << itr->first <<": " << itr->second << endl;
+        }
+      }
+      
+
       // ** scopename **
       // key: symbol
       // key: symbol
