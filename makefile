@@ -4,7 +4,7 @@ build:
 
 test:
 	rm -f program.exe
-	g++ -g -std=c++11 -Wall maincatch.cpp ./tests/test07.cpp -o program.exe
+	g++ -g -std=c++11 -Wall maincatch.cpp ./tests/test04.cpp -o program.exe
 
 testall:
 	rm -f program.exe

@@ -24,7 +24,7 @@ TEST_CASE("(4) curscope: testing current scope")
     REQUIRE(table.size() == 2);
     REQUIRE(table.numscopes() == 1);
 
-    table.enterScope("yoyo");
+    table.enterScope("curscope");
     table.insert("i", "char");
     table.insert("j", "double");
 
@@ -33,21 +33,23 @@ TEST_CASE("(4) curscope: testing current scope")
 
     //cure scope is yoyo.
     symtable<string, string>::Scope s = table.curScope();
-    
+
     //editing the temp scope
     s.Name = "copy";
-    s.Symbols.end()->second = "string";
+    s.Symbols.begin()->second = "string";
 
     //checking it with orignal scope.
-    REQUIRE(s.Name != table.curScope().Name);
-    REQUIRE(s.Symbols.end()->second != table.curScope().Symbols.end()->second);
-
+    REQUIRE(table.curScope().Name != "copy");
+    REQUIRE(table.curScope().Symbols.begin()->second != "string");
+	
+	// inserting and checking if our scope changes.
+	table.insert("new","newS");
+    REQUIRE(table.curScope().Symbols.size() == 3);
+	REQUIRE(s.Symbols.size() == 2);
+	
     // clearing the Scope and checking its size.
     s.Symbols.clear();
     REQUIRE(s.Symbols.size() == 0);
+	REQUIRE(table.curScope().Symbols.size() == 3);
 
-    // checking if changes were made to orignal curScope.
-    REQUIRE(table.curScope().Symbols.size() == 2);
-
-    
 }

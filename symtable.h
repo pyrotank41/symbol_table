@@ -197,7 +197,7 @@ class symtable
       //complete stack
       if(option == ScopeOption::CURRENT)
       {
-        auto itr = scopeDeque.back().Symbols.find(key);
+        auto& itr = scopeDeque.back().Symbols.find(key);
         if( itr != scopeDeque.back().Symbols.end())
         {
           symbol = itr->second;
@@ -209,7 +209,7 @@ class symtable
       //global scope
       else if(option == ScopeOption::GLOBAL)
       {
-        auto itr = scopeDeque.front().Symbols.find(key);
+        auto& itr = scopeDeque.front().Symbols.find(key);
         if( itr != scopeDeque.front().Symbols.end())
         {
           symbol = itr->second;
@@ -223,7 +223,7 @@ class symtable
         
         for(int i = scopeDeque.size()-1; i >= 0 ; --i)
         { 
-          auto itr = scopeDeque[i].Symbols.find(key);
+          auto& itr = scopeDeque[i].Symbols.find(key);
           if( itr != scopeDeque[i].Symbols.end())
           {
             symbol = itr->second;
@@ -269,12 +269,40 @@ class symtable
       //
       // output format per scope:
       //
-      for (int i = scopeDeque.size()-1; i >= 0; i--)
+
+      if(option == ScopeOption::ALL)
       {
-        cout << "** " << scopeDeque[i].Name << " **" << endl;
-        for (auto itr = scopeDeque[i].Symbols.end()-1; itr >= scopeDeque[i].Symbols.begin(); itr--)
+        for (int i = scopeDeque.size()-1; i >= 0; i--)
         {
-          cout << itr->first <<": " << itr->second << endl;
+          output << "** " << scopeDeque[i].Name << " **" << endl;
+          auto& mymap = scopeDeque[i].Symbols;
+
+          for (auto& it=mymap.begin(); it!=mymap.end(); ++it)
+          {
+            output << it->first <<": " << it->second << endl;
+          }
+        }
+      }
+
+      else if( option == ScopeOption::CURRENT)
+      {
+        output << "** " << scopeDeque.back().Name << " **" << endl;
+        auto& mymap = scopeDeque.back().Symbols;
+
+        for (auto& it=mymap.begin(); it!=mymap.end(); ++it)
+        {
+          output << it->first <<": " << it->second << endl;
+        }
+      }
+      
+      else
+      {
+        output << "** " << scopeDeque.front().Name << " **" << endl;
+        auto& mymap = scopeDeque.front().Symbols;
+        
+        for (auto& it=mymap.begin(); it!=mymap.end(); ++it)
+        {
+          output << it->first <<": " << it->second << endl;
         }
       }
       
