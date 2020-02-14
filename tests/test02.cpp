@@ -38,9 +38,7 @@ TEST_CASE("(2) enterscope and exitscope function")
     REQUIRE(table.size() == 0);
     REQUIRE(table.numscopes() == 0); 
 
-    //
     int num= 100000;
-
     for(int i = 0; i < num; i++){
         table.enterScope(""+i);
     }
@@ -49,5 +47,14 @@ TEST_CASE("(2) enterscope and exitscope function")
         table.exitScope();
     }
     REQUIRE(table.numscopes() == 0); 
+
+    table.enterScope("test");
+    table.exitScope();
+    REQUIRE_THROWS(table.exitScope());
+    table.enterScope("test");
+    table.exitScope();
+    REQUIRE(table.numscopes() == 0); 
+
+
 
 }

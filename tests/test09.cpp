@@ -13,7 +13,7 @@
 using namespace std;
 
 
-TEST_CASE("(9) curscope: testing current scope") 
+TEST_CASE("(9) dump") 
 {
     symtable<int, int>  table;
 

@@ -72,9 +72,8 @@ class symtable
 
     // default constructor: --------------------------------------------
     // Creates a new, empty symbol table.  No scope is open.
-    symtable()
-    {
-     // numSymbols = 0;
+    symtable(){
+      cout << "was here" <<endl;
     }
 
     // size: --------------------------------------------------------------
@@ -124,8 +123,12 @@ class symtable
       {
         throw runtime_error("no scope is open");
       }
-      numSymbols -= scopeDeque.front().Symbols.size();
-      scopeDeque.pop_back();
+      else
+      {
+         numSymbols -= scopeDeque.back().Symbols.size();
+         scopeDeque.pop_back();
+      }
+     
     }
 
     // curScope: -----------------------------------------------------------
@@ -154,12 +157,9 @@ class symtable
       {
         itr->second = symbol;
       }
-
       else
       {
-        
         numSymbols += 1;
-    // cout << numSymbols << endl;
         scopeDeque.back().Symbols.emplace( key, symbol);
       }
     }
@@ -197,7 +197,7 @@ class symtable
       //complete stack
       if(option == ScopeOption::CURRENT)
       {
-        auto& itr = scopeDeque.back().Symbols.find(key);
+        auto itr = scopeDeque.back().Symbols.find(key);
         if( itr != scopeDeque.back().Symbols.end())
         {
           symbol = itr->second;
@@ -209,7 +209,7 @@ class symtable
       //global scope
       else if(option == ScopeOption::GLOBAL)
       {
-        auto& itr = scopeDeque.front().Symbols.find(key);
+        auto itr = scopeDeque.front().Symbols.find(key);
         if( itr != scopeDeque.front().Symbols.end())
         {
           symbol = itr->second;
@@ -223,7 +223,7 @@ class symtable
         
         for(int i = scopeDeque.size()-1; i >= 0 ; --i)
         { 
-          auto& itr = scopeDeque[i].Symbols.find(key);
+          auto itr = scopeDeque[i].Symbols.find(key);
           if( itr != scopeDeque[i].Symbols.end())
           {
             symbol = itr->second;
@@ -275,9 +275,9 @@ class symtable
         for (int i = scopeDeque.size()-1; i >= 0; i--)
         {
           output << "** " << scopeDeque[i].Name << " **" << endl;
-          auto& mymap = scopeDeque[i].Symbols;
+          auto mymap = scopeDeque[i].Symbols;
 
-          for (auto& it=mymap.begin(); it!=mymap.end(); ++it)
+          for (auto it=mymap.begin(); it!=mymap.end(); ++it)
           {
             output << it->first <<": " << it->second << endl;
           }
@@ -287,9 +287,9 @@ class symtable
       else if( option == ScopeOption::CURRENT)
       {
         output << "** " << scopeDeque.back().Name << " **" << endl;
-        auto& mymap = scopeDeque.back().Symbols;
+        auto mymap = scopeDeque.back().Symbols;
 
-        for (auto& it=mymap.begin(); it!=mymap.end(); ++it)
+        for (auto it=mymap.begin(); it!=mymap.end(); ++it)
         {
           output << it->first <<": " << it->second << endl;
         }
@@ -298,9 +298,9 @@ class symtable
       else
       {
         output << "** " << scopeDeque.front().Name << " **" << endl;
-        auto& mymap = scopeDeque.front().Symbols;
+        auto mymap = scopeDeque.front().Symbols;
         
-        for (auto& it=mymap.begin(); it!=mymap.end(); ++it)
+        for (auto it=mymap.begin(); it!=mymap.end(); ++it)
         {
           output << it->first <<": " << it->second << endl;
         }

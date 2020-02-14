@@ -15,26 +15,24 @@ using namespace std;
 
 TEST_CASE("(10) dump()") 
 {
-    symtable<string, string>  table;
+    symtable<int, int>  table;
 
     table.enterScope("gloabl");
-    table.insert("x", "char");
-    table.insert("y", "int");
+    table.insert(1, 1);
+    table.insert(2, 1);
+    table.insert(3, 1);
+    table.insert(4, 1);
+    table.insert(5, 1);
+
+    table.enterScope("yoyo");
+    table.insert(1, 1);
+    table.insert(2, 1);
+    table.insert(3, 1);
+    REQUIRE(table.size() == 8);
+
+    table.exitScope();
+    REQUIRE(table.size() == 5);
     
-    REQUIRE(table.size() == 2);
-    REQUIRE(table.numscopes() == 1);
 
-    table.enterScope("curscope");
-    table.insert("i", "char");
-    table.insert("j", "double");
-
-    REQUIRE(table.size() == 4);
-    REQUIRE(table.numscopes() == 2);
-
-    cout << "all----------------" << endl;
-    table.dump(std::cout);
-    cout << "\nglobal----------------" << endl;
-    table.dump(std::cout, symtable<string,string>::ScopeOption::GLOBAL);
-    cout << "\ncurrent----------------" << endl;
-    table.dump(std::cout, symtable<string,string>::ScopeOption::CURRENT);
+    
 }   
