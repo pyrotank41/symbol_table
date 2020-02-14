@@ -13,7 +13,7 @@
 using namespace std;
 
 
-TEST_CASE("(10) dump()") 
+TEST_CASE("(10) testing ground for finding new test ;)") 
 {
     symtable<int, int>  table;
 

@@ -59,8 +59,8 @@ class symtable
     };
 
   private:
-    int numSymbols = 0;
-    deque<Scope> scopeDeque;
+    int numSymbols = 0;  // variable to store total number of symbols.
+    deque<Scope> scopeDeque; // deque to store scopes.
     
   public:
     enum class ScopeOption
@@ -72,9 +72,7 @@ class symtable
 
     // default constructor: --------------------------------------------
     // Creates a new, empty symbol table.  No scope is open.
-    symtable(){
-      cout << "was here" <<endl;
-    }
+    symtable(){}
 
     // size: --------------------------------------------------------------
     // Returns total # of symbols in the symbol table.
@@ -90,7 +88,7 @@ class symtable
     // Complexity: O(1)
     int numscopes() const
     {
-      return scopeDeque.size();
+      return scopeDeque.size(); // returning size of the deque
     }
 
 
@@ -103,8 +101,8 @@ class symtable
     // Complexity: O(1)
     void enterScope(string name)
     {
-      Scope s(name);
-      scopeDeque.push_back(s);
+      Scope s(name); // creating a new scope 
+      scopeDeque.push_back(s); // adding it toe the back of the deque.
     }
 
     //
@@ -125,8 +123,8 @@ class symtable
       }
       else
       {
-         numSymbols -= scopeDeque.back().Symbols.size();
-         scopeDeque.pop_back();
+         numSymbols -= scopeDeque.back().Symbols.size(); // updating total number of symbols.
+         scopeDeque.pop_back(); /// popping the scope at the back of the deque.
       }
      
     }
@@ -141,7 +139,10 @@ class symtable
       {
         throw runtime_error("no scope is open");
       }
-      return scopeDeque.back();
+      // returning the current scope
+      // according to the documentation return statement will create a 
+      // deep copy of maps hence we need not worry about the crating a copy by ourself. 
+      return scopeDeque.back(); 
     }
 
 
@@ -159,7 +160,7 @@ class symtable
       }
       else
       {
-        numSymbols += 1;
+        numSymbols += 1; //since we are adding nuew symbol, we must increase numSymbols too.
         scopeDeque.back().Symbols.emplace( key, symbol);
       }
     }
@@ -194,22 +195,25 @@ class symtable
                 SymbolT& symbol, 
                 ScopeOption option = ScopeOption::ALL) const
     {
-      //complete stack
+      // Current Scope
       if(option == ScopeOption::CURRENT)
       {
-        auto itr = scopeDeque.back().Symbols.find(key);
-        if( itr != scopeDeque.back().Symbols.end())
+        // iterator to the key
+        auto itr = scopeDeque.back().Symbols.find(key); 
+        // if key not found itr goes till end.
+        if( itr != scopeDeque.back().Symbols.end()) 
         {
-          symbol = itr->second;
+          symbol = itr->second; // extracing the Symbol.
           return true;
         }
       }
       
 
-      //global scope
+      // Global scope
       else if(option == ScopeOption::GLOBAL)
       {
-        auto itr = scopeDeque.front().Symbols.find(key);
+        // going to the 1st entry in deque for global.
+        auto itr = scopeDeque.front().Symbols.find(key);  
         if( itr != scopeDeque.front().Symbols.end())
         {
           symbol = itr->second;
@@ -217,13 +221,14 @@ class symtable
         }
       }
 
-      //current Scope
+      // All Scope
       else 
       {
-        
+        // looping through all the scopes from back to front.
         for(int i = scopeDeque.size()-1; i >= 0 ; --i)
         { 
-          auto itr = scopeDeque[i].Symbols.find(key);
+          //going through all the scopes to find the key
+          auto itr = scopeDeque[i].Symbols.find(key); 
           if( itr != scopeDeque[i].Symbols.end())
           {
             symbol = itr->second;
@@ -270,6 +275,7 @@ class symtable
       // output format per scope:
       //
 
+      //dumping all the Symbols in all the scopes
       if(option == ScopeOption::ALL)
       {
         for (int i = scopeDeque.size()-1; i >= 0; i--)
@@ -283,7 +289,7 @@ class symtable
           }
         }
       }
-
+      //Dumping all the Symbols in Current scope.
       else if( option == ScopeOption::CURRENT)
       {
         output << "** " << scopeDeque.back().Name << " **" << endl;
@@ -295,6 +301,7 @@ class symtable
         }
       }
       
+      // Dumpind all the Symbols in Global scope.
       else
       {
         output << "** " << scopeDeque.front().Name << " **" << endl;

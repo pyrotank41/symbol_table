@@ -20,21 +20,18 @@ TEST_CASE("(7) lookup: trying to break the table")
 
     symtable<int, string> table;
 
-    // for(int scope = 0; scope < numScopes; scope++)
-    // {
     table.enterScope("global");
+    //inserting multiple Symbols in one scope.
     for(int symbol = 0; symbol < numSymbols; ++symbol)
     {
         table.insert(symbol,""+(symbol+5));
     }
 
-    
-    // }
-
     REQUIRE(table.size() == numSymbols);
     REQUIRE(table.numscopes() == 1);
     table.exitScope();
 
+    // inserting multiple symbols in multiple scopes.
     for (int i = 0; i < numScopes; i++)
     {
         table.enterScope("test"+i);
@@ -47,7 +44,7 @@ TEST_CASE("(7) lookup: trying to break the table")
     REQUIRE(table.size() == numSymbols*numScopes);
     REQUIRE(table.numscopes() == numScopes);
     
-
+    // exitting all the scopes.
     for (int i = 0; i < numScopes; i++)
     {
         table.exitScope();

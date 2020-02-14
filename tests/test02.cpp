@@ -38,16 +38,20 @@ TEST_CASE("(2) enterscope and exitscope function")
     REQUIRE(table.size() == 0);
     REQUIRE(table.numscopes() == 0); 
 
+    // goinf to multiple scopes 
     int num= 100000;
     for(int i = 0; i < num; i++){
         table.enterScope(""+i);
     }
     REQUIRE(table.numscopes() == num);
+    
+    //getting ouf of multiple scopes
     for(int i = 0; i < num; i++){
         table.exitScope();
     }
     REQUIRE(table.numscopes() == 0); 
 
+    //some extra tests for checking exceptions thrown.
     table.enterScope("test");
     table.exitScope();
     REQUIRE_THROWS(table.exitScope());
